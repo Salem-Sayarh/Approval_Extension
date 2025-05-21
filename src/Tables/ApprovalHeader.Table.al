@@ -1,5 +1,6 @@
-table 50100 "Approval Header"
+table 50100 "Approval Header"     // This table is used to store the header information for purchase order approvals.
 {
+
     DataClassification = ToBeClassified;
 
     fields

@@ -1,5 +1,6 @@
-table 50101 "Approval Line"
+table 50101 "Approval Line"     // This table is used to store the approval line information for purchase orders.
 {
+
     DataClassification = ToBeClassified;
 
     fields
@@ -13,6 +14,7 @@ table 50101 "Approval Line"
         field(2; LineNo; Integer)
         {
             Caption = 'Line No.';
+            AutoIncrement = true;
             DataClassification = ToBeClassified;
         }
         field(3; ApproverID; Code[20])
@@ -32,15 +34,15 @@ table 50101 "Approval Line"
             Caption = 'Sequence No.';
             DataClassification = ToBeClassified;
         }
-        field(6; OverallStatus; Enum "Approval Status Overall")
+        field(6; ActionTaken; Enum "Approval Status Overall")
         {
             Caption = 'Approval Status';
-            DataClassification = ToBeClassified;
+            DataClassification = CustomerContent;
         }
         field(7; ActionDateTime; DateTime)
         {
             Caption = 'Action Date/Time';
-            DataClassification = ToBeClassified;
+            DataClassification = SystemMetadata;
         }
     }
 
