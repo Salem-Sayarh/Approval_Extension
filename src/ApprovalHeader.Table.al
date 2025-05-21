@@ -18,11 +18,11 @@ table 50100 "Approval Header"
         }
         field(3; InitiatorUserID; Code[20])
         {
-            Caption = 'PersonCode';
+            Caption = 'Person Code';
             TableRelation = User;
             DataClassification = SystemMetadata;
         }
-        field(4; CreatedOn; DateTime)
+        field(4; CreationDateTime; DateTime)
         {
             Caption = 'Created On';
             Editable = false;
@@ -55,6 +55,10 @@ table 50100 "Approval Header"
         {
             Clustered = false;
         }
+    }
+    fieldgroups
+    {
+        fieldgroup(Default; "ApprovalHeaderID", "PurchaseOrderNo", "InitiatorUserID", "CreationDateTime", "OverallStatus", "TotalAmount") { }
     }
 
 }
