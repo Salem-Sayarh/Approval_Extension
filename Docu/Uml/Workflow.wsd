@@ -1,0 +1,58 @@
+@startuml WorkflowDiagram
+skinparam linetype ortho
+
+|Purchasing Clerk|
+start
+:Click “Submit for Approval”;
+
+|Purchase Order Page|
+:Call startApproval(PO No.);
+
+|Approval Workflow Codeunit|
+:Insert Approval Header;
+:Insert Approval Line records (1..N);
+:Insert History record ("Submitted");
+:Determine first pending line (Seq=1);
+
+|Approval Management Codeunit|
+:Create Approval Entry for Approver1;
+
+|Approval Entry Table|
+:Insert work item for Approver1;
+
+|Notification (SMTP/Outlook)|
+:Send "Pending Approval" email to Approver1;
+
+|Approver|
+:Open Approval Entry;
+if (Approve?) then (Ja)
+  |Approval Workflow Codeunit|
+  :Update Line1 status = Approved;
+  :Insert History record ("Approved by Approver");
+  
+  if (More steps remaining?) then (Ja)
+    |Approval Management Codeunit|
+    :Create Approval Entry for next Approver;
+    |Approval Entry Table|
+    :Insert work item;
+    |Notification (SMTP/Outlook)|
+    :Send "Pending Approval" email to next Approver;
+  else (Nein)
+    |Approval Workflow Codeunit|
+    :Update Header OverallStatus = Approved;
+    :Insert History record ("Workflow Completed");
+    |Notification (SMTP/Outlook)|
+    :Send "Approved" notification to Initiator;
+  endif
+
+else (Nein)
+  |Approval Workflow Codeunit|
+  :Update Line status = Rejected;
+  :Insert History record ("Rejected by Approver");
+  :Update Header OverallStatus = Rejected;
+  |Notification (SMTP/Outlook)|
+  :Send "Rejected" notification to Initiator;
+endif
+
+stop
+@enduml
