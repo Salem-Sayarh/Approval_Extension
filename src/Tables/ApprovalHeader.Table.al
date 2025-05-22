@@ -55,6 +55,7 @@ table 50100 "Approval Header"     // This table is used to store the header info
         key(PurchaseOrderIdx; PurchaseOrderNo) // speed lookups when querying 
         {
             Clustered = false;
+            Unique = true;
         }
     }
     fieldgroups
