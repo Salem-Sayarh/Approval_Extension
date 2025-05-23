@@ -23,23 +23,28 @@ table 50100 "Approval Header"     // This table is used to store the header info
             TableRelation = User;
             DataClassification = SystemMetadata;
         }
-        field(4; CreationDateTime; DateTime)
+        field(4; InitialApproverID; Code[20])
+        {
+            Caption = 'Person Code';
+            TableRelation = User;
+        }
+        field(5; CreationDateTime; DateTime)
         {
             Caption = 'Created On';
             Editable = false;
             DataClassification = SystemMetadata;
         }
-        field(5; CurrentStepNo; Integer)
+        field(6; CurrentStepNo; Integer)
         {
             Caption = 'Current Step No.';
             DataClassification = ToBeClassified;
         }
-        field(6; OverallStatus; Enum "Approval Status Overall")
+        field(7; OverallStatus; Enum "Approval Status Overall")
         {
             Caption = 'Approval Status';
             DataClassification = ToBeClassified;
         }
-        field(7; TotalAmount; Decimal)
+        field(8; TotalAmount; Decimal)
         {
             Caption = 'Total Amount';
             DataClassification = CustomerContent;
@@ -60,7 +65,7 @@ table 50100 "Approval Header"     // This table is used to store the header info
     }
     fieldgroups
     {
-        fieldgroup(Default; "ApprovalHeaderID", "PurchaseOrderNo", "InitiatorUserID", "CreationDateTime", "OverallStatus", "TotalAmount") { }
+        fieldgroup(Default; "ApprovalHeaderID", "PurchaseOrderNo", "InitiatorUserID", "InitialApproverID", "CreationDateTime", "OverallStatus", "TotalAmount") { }
     }
 
 }
