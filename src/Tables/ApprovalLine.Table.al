@@ -43,6 +43,11 @@ table 50101 "Approval Line"     // This table is used to store the approval line
             Caption = 'Action Date/Time';
             DataClassification = SystemMetadata;
         }
+        field(8; xx; DateTime)
+        {
+            Caption = 'Action Date/Time';
+            DataClassification = SystemMetadata;
+        }
     }
 
     keys
