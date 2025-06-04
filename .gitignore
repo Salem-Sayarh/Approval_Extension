@@ -1,5 +1,7 @@
+# Ignore all files in the .rad directory
 .snapshots
 rad.json
 .alcache
 .altemplates
 .settings.json
+.TODO.txt

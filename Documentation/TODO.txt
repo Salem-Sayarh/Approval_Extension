@@ -1,1 +1,10 @@
-//IDEA
+//TODO: CreateHeaderRecord
+
+    -Inserts a new row in Approval Header
+
+    -Sets PurchaseOrderNo, InitiatorUserID := USERID, CreationDateTime := CURRENTDATETIME, CurrentStepNo := 1, OverallStatus := Pending, TotalAmount := PurchaseHeader."Amount"
+
+    -Returns the newly created Approval Header record (with ApprovalHeaderID populated)
+
+
+//IDEA: Check if User have permission to submit an Approval
