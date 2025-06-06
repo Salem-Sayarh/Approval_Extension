@@ -30,5 +30,19 @@ codeunit 50100 "Submit Approval" //NOTE: CreateHeaderRecord
         exit(false);
     end;
 
+    local procedure CreateApprovalHeader(PurchaseHeader: Record "Purchase Header"): Record "Approval Header"
+    var
+        ApprovalHeader: Record "Approval Header";
+    begin
+        ApprovalHeader.Init();
+        ApprovalHeader.PurchaseOrderNo := PurchaseHeader."No.";
+        ApprovalHeader.InitiatorUserID := UserId();
+        ApprovalHeader.CreationDateTime := CurrentDateTime();
+        ApprovalHeader.CurrentStepNo := 1;
+        ApprovalHeader.OverallStatus := ApprovalHeader.OverallStatus::Pending;
+        ApprovalHeader.TotalAmount := PurchaseHeader.Amount;
+        ApprovalHeader.Insert(true);
+    end;
+
 }
 
