@@ -1,0 +1,53 @@
+1. ValidateCanSubmit
+
+    Checks no existing Pending header for this PO
+
+    Ensures PO.Status = Open and required fields are populated
+
+    Throws an error if invalid
+
+CreateHeaderRecord
+
+    Inserts a new row in Approval Header
+
+    Sets PurchaseOrderNo, InitiatorUserID := USERID, CreationDateTime := CURRENTDATETIME, CurrentStepNo := 1, OverallStatus := Pending, TotalAmount := PurchaseHeader."Amount"
+
+    Returns the newly created Approval Header record (with ApprovalHeaderID populated)
+
+3.BuildApprovalLines
+
+    Accepts the new header and the PO record
+
+    Determines your template of approvers (hard-coded or driven from a small config table)
+
+    For each step:
+
+    Skips it if PO total < ConditionMinAmount
+
+    Inserts into Approval Line with (ApprovalHeaderID, LineNo, ApproverID, ConditionMinAmount, SequenceNo, StepStatus := NotStarted)
+
+4.CreateHistoryEntry
+
+    Inserts the initial “Submitted” entry in Approval History
+
+    Populates StepNo = 0 (or 1), ActionTaken := Submitted, ActionActorID := USERID, ActionDateTime := CURRENTDATETIME, Comments := ''
+
+5.InitializeFirstStep
+
+    Reads the line with SequenceNo = 1 (if it exists)
+
+    Updates its StepStatus := Pending
+
+    Updates the header’s CurrentStepNo := 1 (though that was already set)
+
+6.CreateNativeApprovalEntry
+
+    Calls the standard Approval Management codeunit (430) to generate the built-in Approval Entry record
+
+    Passes your custom header/line context so the approver sees “PO 1001 – Waiting for your approval”
+
+7.SendNotificationEmail
+
+    Calls SMTP Mail codeunit (400) to email the approver
+
+    Uses a simple template (“You have a new approval request for PO …”)

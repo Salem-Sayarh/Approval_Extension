@@ -1,4 +1,4 @@
-codeunit 50100 "Submit Approval" //NOTE: CreateHeaderRecord
+codeunit 50100 "Submit Approval" //NOTE:
 {
 
     local procedure ValidateCanSubmit(PurchaseHeader: Record "Purchase Header"): Boolean
@@ -42,6 +42,36 @@ codeunit 50100 "Submit Approval" //NOTE: CreateHeaderRecord
         ApprovalHeader.OverallStatus := ApprovalHeader.OverallStatus::Pending;
         ApprovalHeader.TotalAmount := PurchaseHeader.Amount;
         ApprovalHeader.Insert(true);
+    end;
+
+    local procedure BuildApprovalLines(
+        ApprovalHeader: Record "Approval Header";
+        PurchaseHeader: Record "Purchase Header"
+    )
+    var
+        ApprovalTemplate: Record "Approval Template";
+        ApprovalLine: Record "Approval Line";
+        LineNo: Integer;
+    begin
+        ApprovalTemplate.SetRange(ApprovalTemplate.IsActive, true);
+        repeat
+            if PurchaseHeader.Amount < ApprovalTemplate.ConditionMinAmount then;//continue //FIXME continue 
+            ApprovalLine.SetRange(ApprovalHeaderID, ApprovalHeader.ApprovalHeaderID);
+            if ApprovalLine.Next(-1) <> 0 then
+                ApprovalLine.LineNo := ApprovalLine.LineNo + 1
+            else
+                LineNo := 1;
+            ApprovalLine.Init();    // Init new Approval Line
+            //Populate fields
+            ApprovalLine.ApprovalHeaderID := ApprovalHeader.ApprovalHeaderID;
+            ApprovalLine.LineNo := LineNo;
+            ApprovalLine.ApproverID := ApprovalTemplate.ApproverID;
+            ApprovalLine.ConditionMinAmount := ApprovalTemplate.ConditionMinAmount;
+            ApprovalLine.SequenceNo := ApprovalTemplate.SequenceNo;
+            ApprovalLine.StepStatus := StepStatus::NotStarted;
+            ApprovalLine.ActionDateTime := CurrentDateTime();
+            ApprovalLine.Insert(true); // Write in DB
+        until ApprovalTemplate.Next() = 0;
     end;
 
 }

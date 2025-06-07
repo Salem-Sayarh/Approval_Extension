@@ -1,10 +1,14 @@
-//TODO: CreateHeaderRecord
+//TODO: BuildApprovalLines
 
-    -Inserts a new row in Approval Header
+    -Accepts the new header and the PO record
 
-    -Sets PurchaseOrderNo, InitiatorUserID := USERID, CreationDateTime := CURRENTDATETIME, CurrentStepNo := 1, OverallStatus := Pending, TotalAmount := PurchaseHeader."Amount"
+    -Determines your template of approvers (hard-coded or driven from a small config table)
 
-    -Returns the newly created Approval Header record (with ApprovalHeaderID populated)
+    -For each step:
+
+        +Skips it if PO total < ConditionMinAmount
+
+        +Inserts into Approval Line with (ApprovalHeaderID, LineNo, ApproverID, ConditionMinAmount, SequenceNo,     StepStatus := NotStarted)
 
 
 //IDEA: Check if User have permission to submit an Approval
