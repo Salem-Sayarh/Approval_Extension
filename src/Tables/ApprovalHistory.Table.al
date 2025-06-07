@@ -23,7 +23,7 @@ table 50102 "Approval History"     // This table is used to store the history of
             Caption = 'Step No.';
             DataClassification = ToBeClassified;
         }
-        field(4; ActionTaken; Enum "Approval Action")
+        field(4; ActionTaken; Enum "Action Taken")
         {
             Caption = 'Action Taken';
             DataClassification = ToBeClassified;

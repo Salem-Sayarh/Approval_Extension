@@ -1,14 +1,10 @@
-//TODO: BuildApprovalLines
+//TODO: 5.InitializeFirstStep
 
-    -Accepts the new header and the PO record
+    -Reads the line with SequenceNo = 1 (if it exists)
 
-    -Determines your template of approvers (hard-coded or driven from a small config table)
+    -Updates its StepStatus := Pending
 
-    -For each step:
-
-        +Skips it if PO total < ConditionMinAmount
-
-        +Inserts into Approval Line with (ApprovalHeaderID, LineNo, ApproverID, ConditionMinAmount, SequenceNo,     StepStatus := NotStarted)
+    -Updates the header’s CurrentStepNo := 1 (though that was already set)
 
 
 //IDEA: Check if User have permission to submit an Approval

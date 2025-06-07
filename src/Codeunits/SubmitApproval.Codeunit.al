@@ -1,4 +1,4 @@
-codeunit 50100 "Submit Approval" //NOTE:
+codeunit 50100 "Submit Approval" //NOTE:InitializeFirstStep
 {
 
     local procedure ValidateCanSubmit(PurchaseHeader: Record "Purchase Header"): Boolean
@@ -72,6 +72,21 @@ codeunit 50100 "Submit Approval" //NOTE:
             ApprovalLine.ActionDateTime := CurrentDateTime();
             ApprovalLine.Insert(true); // Write in DB
         until ApprovalTemplate.Next() = 0;
+    end;
+
+    local procedure CreateHistoryEntry(HeaderId: Integer; StepNo: Integer; ActionTaken: Enum "Action Taken";
+    ActionActor: Code[20]; Comments: Text[250])
+    var
+        ApprovalHistory: Record "Approval History";
+    begin
+        ApprovalHistory.Init();
+        ApprovalHistory.ApprovalHeaderID := HeaderID;
+        ApprovalHistory.StepNo := StepNo;
+        ApprovalHistory.ActionActorID := ActionActor;
+        ApprovalHistory.ActionTaken := ActionTaken;
+        ApprovalHistory.ActionDateTime := CurrentDateTime();
+        ApprovalHistory.Comments := Comments;
+        ApprovalHistory.Insert();
     end;
 
 }
