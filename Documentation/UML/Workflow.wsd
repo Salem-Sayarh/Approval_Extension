@@ -1,58 +1,48 @@
-@startuml WorkflowDiagram
-skinparam linetype ortho
+@startuml Purchase Approval Workflow
 
-|Purchasing Clerk|
-start
-:Click “Submit for Approval”;
+title Multi-Level Purchase Approval Workflow
 
-|Purchase Order Page|
-:Call startApproval(PO No.);
+component "Submit Purchase" as submit
+component "Validate Submission" as validate
+component "Create Approval Header" as create_header
+component "Build Approval Lines" as build_lines
+component "Activate Step" as activate_step
+component "Approval Decision" as approval_decision
+component "Complete Approval" as complete_approval
+component "Handle Rejection" as handle_rejection
 
-|Approval Workflow Codeunit|
-:Insert Approval Header;
-:Insert Approval Line records (1..N);
-:Insert History record ("Submitted");
-:Determine first pending line (Seq=1);
+database "Purchase Header" as purchase_db
+database "Approval Template" as template_db
+database "Approval Header" as header_db
+database "Approval Line" as line_db
+database "Approval History" as history_db
 
-|Approval Management Codeunit|
-:Create Approval Entry for Approver1;
+submit --> validate : "1. Initiate"
+validate --> purchase_db : "2. Check status"
+validate --> header_db : "3. Check existing"
 
-|Approval Entry Table|
-:Insert work item for Approver1;
+validate --> create_header : "4. Create record"
+create_header --> header_db : "5. Store"
 
-|Notification (SMTP/Outlook)|
-:Send "Pending Approval" email to Approver1;
+create_header --> build_lines : "6. Generate steps"
+build_lines --> template_db : "7. Get templates"
+build_lines --> line_db : "8. Store steps"
 
-|Approver|
-:Open Approval Entry;
-if (Approve?) then (Ja)
-  |Approval Workflow Codeunit|
-  :Update Line1 status = Approved;
-  :Insert History record ("Approved by Approver");
-  
-  if (More steps remaining?) then (Ja)
-    |Approval Management Codeunit|
-    :Create Approval Entry for next Approver;
-    |Approval Entry Table|
-    :Insert work item;
-    |Notification (SMTP/Outlook)|
-    :Send "Pending Approval" email to next Approver;
-  else (Nein)
-    |Approval Workflow Codeunit|
-    :Update Header OverallStatus = Approved;
-    :Insert History record ("Workflow Completed");
-    |Notification (SMTP/Outlook)|
-    :Send "Approved" notification to Initiator;
-  endif
+build_lines --> activate_step : "9. Start first step"
+activate_step --> line_db : "10. Update status"
+activate_step --> approval_decision : "11. Send request"
 
-else (Nein)
-  |Approval Workflow Codeunit|
-  :Update Line status = Rejected;
-  :Insert History record ("Rejected by Approver");
-  :Update Header OverallStatus = Rejected;
-  |Notification (SMTP/Outlook)|
-  :Send "Rejected" notification to Initiator;
-endif
+approval_decision --> line_db : "12. Update status"
+approval_decision --> history_db : "13. Record action"
 
-stop
+approval_decision --> activate_step : "14a. Approved\n(next step)" 
+activate_step --> approval_decision
+
+approval_decision --> complete_approval : "14b. Final approval"
+complete_approval --> purchase_db : "15. Update PO status"
+
+approval_decision --> handle_rejection : "14c. Rejected"
+handle_rejection --> purchase_db : "16. Reject PO"
+handle_rejection --> header_db : "17. Update status"
+
 @enduml

@@ -1,40 +1,54 @@
-@startuml Tables
+@startuml ApprovalWorkflowTables
 
-title Purchase Approval Workflow Tables
-
-entity "Approval Header" as Header {
-  * ApprovalHeaderID : Integer <<PK>>
-  * PurchaseOrderNo : Code[20] <<FK>>
+entity "Approval Workflow" as Workflow {
+  * WorkflowID : Integer <<PK>>
   --
-  InitiatorUserID    : Code[50]
-  CreatedDateTime    : DateTime
-  CurrentSequenceNo  : Integer       ' pointer into sequence steps
-  OverallStatus      : Enum "Approval Status Overall"
-  TotalAmount        : Decimal
+  DocumentType : Enum("Approval Doc Type")
+  PurchaseOrderNo : Code[20]
+  InitiatorUserID : Code[50]
+  CreationDateTime : DateTime
+  CurrentStepSequence : Integer
+  WorkflowStatus : Enum("Approval Workflow Status")
+  TotalAmount : Decimal
+  DueDate : Date
 }
 
-entity "Approval Line" as Line {
-  * ApprovalHeaderID  : Integer <<PK,FK>>  ' composite PK with LineNo
-  * LineNo           : Integer <<PK>>
+entity "Approval Workflow Step" as Step {
+  * StepID : Integer <<PK>>
   --
-  ApproverID         : Code[50]
+  WorkflowID : Integer <<FK>>
+  SequenceNo : Integer
+  ApproverID : Code[50]
+  DelegatedToID : Code[50]
   ConditionMinAmount : Decimal
-  SequenceNo         : Integer       ' business step number
-  StepStatus         : Enum "StepStatus"
-  ActionDateTime     : DateTime
+  Status : Enum("Approval Step Status")
+  ActionDateTime : DateTime
+  ApprovalEntryID : Integer
 }
 
-entity "Approval History" as History {
-  * HistoryEntryID    : Integer <<PK>>
-  * ApprovalHeaderID  : Integer <<FK>>
+entity "Approval Workflow Log" as Log {
+  * LogEntryID : Integer <<PK>>
   --
-  SequenceNo         : Integer       ' logged step number
-  ActionTaken        : Enum "Action Taken"
-  ActionActorID      : Code[50]
-  ActionDateTime     : DateTime
-  Comments           : Text[250]
+  WorkflowID : Integer <<FK>>
+  StepID : Integer <<FK>>
+  Action : Enum("Approval Action")
+  ActorID : Code[50]
+  DateTime : DateTime
+  Comments : Text[250]
 }
 
-Header ||--o{ Line    : has
-Header ||--o{ History : records
+entity "Approval Workflow Template" as Template {
+  * TemplateID : Integer <<PK>>
+  --
+  SequenceNo : Integer
+  ApproverID : Code[50]
+  ConditionMinAmount : Decimal
+  IsActive : Boolean
+}
+
+Workflow ||--o{ Step     : "1 Workflow → Many Steps"
+Workflow ||--o{ Log      : "1 Workflow → Many Logs"
+Step     ||--o{ Log      : "1 Step → Many Logs"
+Step     }--|| Template  : "Uses configuration from"
+
 @enduml

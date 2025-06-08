@@ -1,0 +1,20 @@
+@startuml State
+state Draft
+state Pending
+state "More Steps?" as C <<choice>>
+state InReview
+state Approved
+state Rejected
+state Delegated
+
+' Transitions with labels
+Draft     --> Pending     : Submit
+Pending   --> C           : Step 1 Approve
+C         --> InReview    : Yes
+InReview  --> Pending     : Activate Next
+C         --> Approved    : No
+Pending   --> Rejected    : Any Step Reject
+Pending   --> Delegated   : Delegate
+Delegated --> Pending     : Process
+Rejected  --> Pending     : Resubmit
+@enduml

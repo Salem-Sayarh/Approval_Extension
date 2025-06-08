@@ -98,8 +98,27 @@ codeunit 50100 "Submit Approval" //NOTE:InitializeFirstStep
     procedure ActivateStep(ApprovalHeader: Record "Approval Header")
     var
         ApprovalLine: Record "Approval Line";
+        ApprovalTemplate: Record "Approval Template";
+        PurchaseHeader: Record "Purchase Header";
+        NextSequenceNo: Integer;
+        ApprovalMgmt: Codeunit "Approvals Mgmt.";
     begin
+        //GET next SequenceNo
+        NextSequenceNo := ApprovalHeader.CurrentSequenceNo;
+        // GET current LineNo
+        ApprovalLine.SetRange(ApprovalHeaderID, ApprovalHeader.ApprovalHeaderID);
+        ApprovalLine.SetRange(SequenceNo, NextSequenceNo);
+        if not ApprovalLine.FindFirst() then
+            Error('No Approval Line for Sequence 1%', NextSequenceNo);
 
+        // Update The Line
+        ApprovalLine.StepStatus := StepStatus::Pending;
+        ApprovalLine.ActionDateTime := CurrentDateTime;
+        ApprovalLine.Modify();
+
+        //CALL Approvals-Mgmt
+        PurchaseHeader.Get(ApprovalHeader.PurchaseOrderNo);
+        // Codeunit.Run(ApprovalMgmt, PurchaseHeader,ApprovalLine.ApproverID,)
     end;
 
 }
