@@ -33,15 +33,20 @@ codeunit 50100 "Submit Approval" //NOTE:InitializeFirstStep
     local procedure CreateApprovalHeader(PurchaseHeader: Record "Purchase Header"): Record "Approval Header"
     var
         ApprovalHeader: Record "Approval Header";
+        ApprovalHistory: Record "Approval History";
     begin
         ApprovalHeader.Init();
         ApprovalHeader.PurchaseOrderNo := PurchaseHeader."No.";
         ApprovalHeader.InitiatorUserID := UserId();
         ApprovalHeader.CreationDateTime := CurrentDateTime();
-        ApprovalHeader.CurrentStepNo := 1;
+        ApprovalHeader.CurrentSequenceNo := 1;
         ApprovalHeader.OverallStatus := ApprovalHeader.OverallStatus::Pending;
         ApprovalHeader.TotalAmount := PurchaseHeader.Amount;
         ApprovalHeader.Insert(true);
+        //Insert history Rec
+        CreateHistoryEntry(ApprovalHeader.ApprovalHeaderID, 0, ApprovalHistory.ActionTaken::Submitted, ApprovalHeader.InitiatorUserID, ApprovalHeader.CreationDateTime, 'Approval submitted');
+
+        exit(ApprovalHeader);
     end;
 
     local procedure BuildApprovalLines(
@@ -51,6 +56,7 @@ codeunit 50100 "Submit Approval" //NOTE:InitializeFirstStep
     var
         ApprovalTemplate: Record "Approval Template";
         ApprovalLine: Record "Approval Line";
+        ApprovalHistory: Record "Approval History";
         LineNo: Integer;
     begin
         ApprovalTemplate.SetRange(ApprovalTemplate.IsActive, true);
@@ -74,19 +80,26 @@ codeunit 50100 "Submit Approval" //NOTE:InitializeFirstStep
         until ApprovalTemplate.Next() = 0;
     end;
 
-    local procedure CreateHistoryEntry(HeaderId: Integer; StepNo: Integer; ActionTaken: Enum "Action Taken";
-    ActionActor: Code[20]; Comments: Text[250])
+    procedure CreateHistoryEntry(HeaderId: Integer; StepNo: Integer; ActionTaken: Enum "Action Taken";
+    ActionActor: Code[20]; ActionDateTime: DateTime; Comments: Text[250])
     var
         ApprovalHistory: Record "Approval History";
     begin
         ApprovalHistory.Init();
         ApprovalHistory.ApprovalHeaderID := HeaderID;
-        ApprovalHistory.StepNo := StepNo;
+        ApprovalHistory.SequenceNo := StepNo;
         ApprovalHistory.ActionActorID := ActionActor;
         ApprovalHistory.ActionTaken := ActionTaken;
-        ApprovalHistory.ActionDateTime := CurrentDateTime();
+        ApprovalHistory.ActionDateTime := ActionDateTime;
         ApprovalHistory.Comments := Comments;
-        ApprovalHistory.Insert();
+        ApprovalHistory.Insert(true);
+    end;
+
+    procedure ActivateStep(ApprovalHeader: Record "Approval Header")
+    var
+        ApprovalLine: Record "Approval Line";
+    begin
+
     end;
 
 }

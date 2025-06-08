@@ -1,39 +1,40 @@
 @startuml Tables
+
 title Purchase Approval Workflow Tables
 
 entity "Approval Header" as Header {
   * ApprovalHeaderID : Integer <<PK>>
   * PurchaseOrderNo : Code[20] <<FK>>
   --
-  InitiatorUserID : Code[20]
-  CreatedDateTime: DateTime
-  CurrentStepNo : Integer
-  OverallStatus : Enum
-  TotalAmount : Decimal
+  InitiatorUserID    : Code[50]
+  CreatedDateTime    : DateTime
+  CurrentSequenceNo  : Integer       ' pointer into sequence steps
+  OverallStatus      : Enum "Approval Status Overall"
+  TotalAmount        : Decimal
 }
 
 entity "Approval Line" as Line {
-  * LineNo : Integer <<PK>>
-  * HeaderID : Guid <<FK>>
+  * ApprovalHeaderID  : Integer <<PK,FK>>  ' composite PK with LineNo
+  * LineNo           : Integer <<PK>>
   --
-  ApproverID : Code[50]
+  ApproverID         : Code[50]
   ConditionMinAmount : Decimal
-  SequenceNo : Integer
-  OverallStatus : Enum
-  ActionDateTime : DateTime
+  SequenceNo         : Integer       ' business step number
+  StepStatus         : Enum "StepStatus"
+  ActionDateTime     : DateTime
 }
 
 entity "Approval History" as History {
-  * HistoryEntryID : Integer<<PK>>
-  *  ApprovalHeaderID: Integer<<FK>>
+  * HistoryEntryID    : Integer <<PK>>
+  * ApprovalHeaderID  : Integer <<FK>>
   --
-  StepNo : Integer
-  ActionTaken : Option
-  ActionActor : Code[50]
-  ActionDateTime : DateTime
-  Comments : Text[250]
+  SequenceNo         : Integer       ' logged step number
+  ActionTaken        : Enum "Action Taken"
+  ActionActorID      : Code[50]
+  ActionDateTime     : DateTime
+  Comments           : Text[250]
 }
 
-Header ||--o{ Line : has
+Header ||--o{ Line    : has
 Header ||--o{ History : records
 @enduml

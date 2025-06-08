@@ -6,5 +6,10 @@
 
     -Updates the header’s CurrentStepNo := 1 (though that was already set)
 
+    -CreateApprovalHeader → BuildApprovalLines → InitializeFirstStep → (rest of the flow)
+
+
+
+//FIXME: Comments for approval History
 
 //IDEA: Check if User have permission to submit an Approval

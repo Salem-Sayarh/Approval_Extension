@@ -34,7 +34,7 @@ table 50100 "Approval Header"     // This table is used to store the header info
             Editable = false;
             DataClassification = SystemMetadata;
         }
-        field(6; CurrentStepNo; Integer)
+        field(6; CurrentSequenceNo; Integer)
         {
             Caption = 'Current Step No.';
             DataClassification = ToBeClassified;

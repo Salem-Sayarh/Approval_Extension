@@ -18,7 +18,7 @@ table 50102 "Approval History"     // This table is used to store the history of
             TableRelation = "Approval Header"."ApprovalHeaderID";
             DataClassification = ToBeClassified;
         }
-        field(3; StepNo; Integer)
+        field(3; SequenceNo; Integer)
         {
             Caption = 'Step No.';
             DataClassification = ToBeClassified;
