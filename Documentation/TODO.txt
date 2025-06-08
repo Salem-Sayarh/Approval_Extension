@@ -1,12 +1,4 @@
-//TODO: 5.InitializeFirstStep
-
-    -Reads the line with SequenceNo = 1 (if it exists)
-
-    -Updates its StepStatus := Pending
-
-    -Updates the header’s CurrentStepNo := 1 (though that was already set)
-
-    -CreateApprovalHeader → BuildApprovalLines → InitializeFirstStep → (rest of the flow)
+//TODO: RESET
 
 
 
