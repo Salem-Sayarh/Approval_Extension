@@ -1,20 +1,19 @@
-@startuml State
+@startuml StateMachine
+
+title Approval Workflow State Transitions
+
 state Draft
 state Pending
-state "More Steps?" as C <<choice>>
-state InReview
+state "More Steps?" as decision <<choice>>
 state Approved
 state Rejected
-state Delegated
 
-' Transitions with labels
-Draft     --> Pending     : Submit
-Pending   --> C           : Step 1 Approve
-C         --> InReview    : Yes
-InReview  --> Pending     : Activate Next
-C         --> Approved    : No
-Pending   --> Rejected    : Any Step Reject
-Pending   --> Delegated   : Delegate
-Delegated --> Pending     : Process
-Rejected  --> Pending     : Resubmit
+' Transitions
+Draft --> Pending : Submit
+Pending --> decision : Step Approved
+decision --> Pending : Yes\n(activate next)
+decision --> Approved : No\n(final step)
+Pending --> Rejected : Any Step Rejected
+Rejected --> Pending : Resubmit
+
 @enduml

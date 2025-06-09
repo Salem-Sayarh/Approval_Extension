@@ -1,48 +1,48 @@
 @startuml Purchase Approval Workflow
 
-title Multi-Level Purchase Approval Workflow
+title Simplified Multi-Level Purchase Approval Workflow
 
-component "Submit Purchase" as submit
-component "Validate Submission" as validate
-component "Create Approval Header" as create_header
-component "Build Approval Lines" as build_lines
+component "Submit Document" as submit
+component "Validate Request" as validate
+component "Create Workflow" as create_workflow
+component "Build Steps" as build_steps
 component "Activate Step" as activate_step
 component "Approval Decision" as approval_decision
-component "Complete Approval" as complete_approval
+component "Finalize Approval" as finalize_approval
 component "Handle Rejection" as handle_rejection
 
-database "Purchase Header" as purchase_db
-database "Approval Template" as template_db
-database "Approval Header" as header_db
-database "Approval Line" as line_db
-database "Approval History" as history_db
+database "Document Header" as doc_db
+database "Workflow Template" as template_db
+database "Approval Workflow" as workflow_db
+database "Workflow Step" as step_db
+database "Workflow Log" as log_db
 
 submit --> validate : "1. Initiate"
-validate --> purchase_db : "2. Check status"
-validate --> header_db : "3. Check existing"
+validate --> doc_db : "2. Check status"
+validate --> workflow_db : "3. Check duplicates"
 
-validate --> create_header : "4. Create record"
-create_header --> header_db : "5. Store"
+validate --> create_workflow : "4. Create workflow"
+create_workflow --> workflow_db : "5. Store"
 
-create_header --> build_lines : "6. Generate steps"
-build_lines --> template_db : "7. Get templates"
-build_lines --> line_db : "8. Store steps"
+create_workflow --> build_steps : "6. Generate steps"
+build_steps --> template_db : "7. Get templates"
+build_steps --> step_db : "8. Store steps"
 
-build_lines --> activate_step : "9. Start first step"
-activate_step --> line_db : "10. Update status"
+build_steps --> activate_step : "9. Start first step"
+activate_step --> step_db : "10. Set Pending"
 activate_step --> approval_decision : "11. Send request"
 
-approval_decision --> line_db : "12. Update status"
-approval_decision --> history_db : "13. Record action"
+approval_decision --> step_db : "12. Update status"
+approval_decision --> log_db : "13. Record action"
 
 approval_decision --> activate_step : "14a. Approved\n(next step)" 
 activate_step --> approval_decision
 
-approval_decision --> complete_approval : "14b. Final approval"
-complete_approval --> purchase_db : "15. Update PO status"
+approval_decision --> finalize_approval : "14b. Final approval"
+finalize_approval --> doc_db : "15. Release document"
 
 approval_decision --> handle_rejection : "14c. Rejected"
-handle_rejection --> purchase_db : "16. Reject PO"
-handle_rejection --> header_db : "17. Update status"
+handle_rejection --> doc_db : "16. Reject document"
+handle_rejection --> workflow_db : "17. Update status"
 
 @enduml

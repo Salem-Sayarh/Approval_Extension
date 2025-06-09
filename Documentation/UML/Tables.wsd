@@ -1,10 +1,12 @@
 @startuml ApprovalWorkflowTables
 
+title Approval Workflow Tables (Simplified)
+
 entity "Approval Workflow" as Workflow {
   * WorkflowID : Integer <<PK>>
   --
   DocumentType : Enum("Approval Doc Type")
-  PurchaseOrderNo : Code[20]
+  DocumentNo : Code[20]
   InitiatorUserID : Code[50]
   CreationDateTime : DateTime
   CurrentStepSequence : Integer
@@ -19,11 +21,10 @@ entity "Approval Workflow Step" as Step {
   WorkflowID : Integer <<FK>>
   SequenceNo : Integer
   ApproverID : Code[50]
-  DelegatedToID : Code[50]
   ConditionMinAmount : Decimal
   Status : Enum("Approval Step Status")
   ActionDateTime : DateTime
-  ApprovalEntryID : Integer
+  ApprovalEntryID : Integer <<FK>>
 }
 
 entity "Approval Workflow Log" as Log {
