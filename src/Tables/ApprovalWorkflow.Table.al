@@ -34,7 +34,7 @@ table 50104 "Approval Workflow"
             end;
 
         }
-        field(4; InitiatorID; Code[50])
+        field(4; InitiatorID; Code[20])
         {
             Caption = 'Initiator User ID';
             DataClassification = EndUserIdentifiableInformation;

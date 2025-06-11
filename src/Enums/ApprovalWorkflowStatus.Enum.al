@@ -2,8 +2,8 @@ enum 50104 "Approval Workflow Status"
 {
     Extensible = true;
 
-    value(0; Submitted) { }
-    value(1; Approved) { }
-    value(2; Rejected) { }
-    value(3; Resubmitted) { }
+    value(0; Draft) { }
+    value(1; InProgress) { }
+    value(2; Approved) { }
+    value(3; Rejected) { }
 }
