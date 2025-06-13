@@ -8,16 +8,27 @@ page 50130 "Approval Workflow Test Page"
     {
         area(Content)
         {
-            field(PurchaseOrderNo; SelectedPurchaseNo)
+            group(Header)
             {
-                ApplicationArea = All;
-                Caption = 'Purchase Order';
-                TableRelation = "Purchase Header"."No." where("Document Type" = const(Order));
+                field(PurchaseOrderNo; SelectedPurchaseNo)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Purchase Order';
+                    TableRelation = "Purchase Header"."No." where("Document Type" = const(Order));
 
-                trigger OnValidate()
-                begin
-                    ValidatePurchaseOrderSelection();
-                end;
+                    trigger OnValidate()
+                    begin
+                        ValidatePurchaseOrderSelection();
+                    end;
+                }
+            }
+            group(Details)
+            {
+                part(Templates; "Approval Template List Part")
+                {
+
+                }
+
             }
         }
     }
@@ -29,13 +40,15 @@ page 50130 "Approval Workflow Test Page"
             action(CreateWorkflowAction)
             {
                 Caption = 'Create Workflow';
-                Enabled = IsEligibleForWorkflow;
+                // Enabled = IsEligibleForWorkflow;
                 Image = CreateWorkflow;
 
                 trigger OnAction()
                 var
                     ApprovalWorkflow: Record "Approval Workflow";
                 begin
+                    //Create Test Templates
+                    //WorkflowTestData.CreateDefaultTemplates();
                 end;
             }
         }
@@ -44,6 +57,7 @@ page 50130 "Approval Workflow Test Page"
         SelectedPurchaseNo: Code[20];
         IsEligibleForWorkflow: Boolean;
         ShowDetails: Boolean;
+        WorkflowTestData: Codeunit "Workflow Test Data";
 
     local procedure ValidatePurchaseOrderSelection()
     var

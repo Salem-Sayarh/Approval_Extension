@@ -8,14 +8,13 @@ table 50107 "Approval Workflow Template"
         {
             Caption = 'Template ID';
             DataClassification = SystemMetadata;
-            AutoIncrement = true;
         }
         field(2; SequenceNo; Integer)
         {
             Caption = 'Sequence No.';
             DataClassification = SystemMetadata;
         }
-        field(3; ApprovalID; Integer)
+        field(3; ApproverID; code[20])
         {
             Caption = 'Approval ID';
             DataClassification = EndUserIdentifiableInformation;
