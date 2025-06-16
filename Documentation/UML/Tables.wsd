@@ -13,6 +13,7 @@ entity "Approval Workflow" as Workflow {
   WorkflowStatus : Enum("Approval Workflow Status")
   TotalAmount : Decimal
   DueDate : Date
+    ApprovalEntryID : Integer <<FK>>
 }
 
 entity "Approval Workflow Step" as Step {

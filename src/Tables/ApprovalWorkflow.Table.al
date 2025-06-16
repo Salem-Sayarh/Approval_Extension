@@ -70,6 +70,12 @@ table 50104 "Approval Workflow"
             DataClassification = CustomerContent;
 
         }
+        field(10; ApprovalEntryID; Integer)
+        {
+            Caption = 'Approval Entry ID';
+            DataClassification = SystemMetadata;
+            TableRelation = "Approval Entry";
+        }
 
     }
 
@@ -80,6 +86,10 @@ table 50104 "Approval Workflow"
             Clustered = true;
         }
         key(DocumentRef; DocumentNo, DocumentType)
+        {
+            Clustered = false;
+        }
+        key(PK_ApprovalEntry; ApprovalEntryID)
         {
             Clustered = false;
         }

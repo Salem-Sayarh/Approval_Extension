@@ -1,12 +1,7 @@
-//TODO: RESET
-
-
 
 //FIXME: Comments for approval History
 
 //IDEA: Check if User have permission to submit an Approval
 
-//TODO: LAST -> Create Instruction Book
-    * [Tables] → [Test Pages] → [Basic Codeunits] → [Test] → [Events] → [UI Integration]
 
     

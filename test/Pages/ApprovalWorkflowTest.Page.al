@@ -1,4 +1,4 @@
-page 50130 "Approval Workflow Test Page"
+page 50105 "Approval Workflow Test Page"
 {
     PageType = Card;
     UsageCategory = Administration;
